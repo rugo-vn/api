@@ -1,0 +1,34 @@
+{
+  "name": "@rugo-vn/api",
+  "version": "1.0.0",
+  "description": "REST Api for handle model.",
+  "main": "./src/index.js",
+  "type": "module",
+  "scripts": {
+    "doc": "jsdoc2md **/*.js > docs/API.md",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint": "npm run lint:fix",
+    "test": "mocha",
+    "coverage": "c8 npm run test",
+    "pre-commit": "npm run lint && npm run coverage && npm run doc"
+  },
+  "author": "Vu Anh Hao <hi@haova.me> (https://www.haova.me)",
+  "license": "MIT",
+  "devDependencies": {
+    "c8": "^7.11.2",
+    "chai": "^4.3.6",
+    "eslint": "^8.14.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-jsdoc": "^39.2.9",
+    "jsdoc-to-markdown": "^7.1.1",
+    "mocha": "^10.0.0"
+  },
+  "dependencies": {
+    "@koa/router": "^10.1.1",
+    "@rugo-vn/common": "^1.0.0",
+    "moment": "^2.29.3",
+    "object-path": "^0.11.8",
+    "ramda": "^0.28.0"
+  }
+}
