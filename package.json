@@ -1,6 +1,6 @@
 {
   "name": "@rugo-vn/api",
-  "version": "1.0.0",
+  "version": "2.0.0-beta.0",
   "description": "REST Api for handle model.",
   "main": "./src/index.js",
   "type": "module",
@@ -22,13 +22,10 @@
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-jsdoc": "^39.2.9",
     "jsdoc-to-markdown": "^7.1.1",
-    "mocha": "^10.0.0"
+    "mocha": "^10.0.0",
+    "moleculer": "^0.14.21"
   },
   "dependencies": {
-    "@koa/router": "^10.1.1",
-    "@rugo-vn/common": "^1.0.0",
-    "moment": "^2.29.3",
-    "object-path": "^0.11.8",
     "ramda": "^0.28.0"
   }
 }
