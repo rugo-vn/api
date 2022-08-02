@@ -71,7 +71,13 @@ export const methods = {
   getSchema (ctx) {
     const { params, meta } = ctx;
     const model = path(['params', 'model'], params);
-    meta.schema = path(['schemas', model], meta);
+    const schemas = meta.schemas || [];
+
+    for (let schema of schemas)
+      if (schema.name === model){
+        meta.schema = schema;
+        break;
+      }
 
     if (!meta.schema) {
       ctx.locals.resp = NOT_FOUND_RESP;

@@ -14,7 +14,7 @@ const modelService = {
   }
 };
 
-const DEFAULT_SETTINGS = { meta: { schemas: { foo: 'bar' } } };
+const DEFAULT_SETTINGS = { meta: { schemas: [{ name: 'foo' }] } };
 
 describe('Api test', () => {
   let broker;
@@ -34,7 +34,7 @@ describe('Api test', () => {
     const { body, status } = await broker.call('api.get', { params: { id: 0, model: 'foo' } }, DEFAULT_SETTINGS);
     expect(status).to.not.be.eq(404);
     expect(body.params).to.has.property('id', 0);
-    expect(body.meta).to.has.property('schema', 'bar');
+    expect(body.meta.schema).to.has.property('name', 'foo');
   }); 
 
   it('should find', async () => {
@@ -69,10 +69,9 @@ describe('Api test', () => {
     expect(body.params.set).to.has.property('foo', 'bar');
   });
 
-  it('should get', async () => {
+  it('should remove', async () => {
     const { body, status } = await broker.call('api.remove', { params: { id: 0, model: 'foo' } }, DEFAULT_SETTINGS);
     expect(status).to.not.be.eq(404);
     expect(body.params).to.has.property('id', 0);
-    expect(body.meta).to.has.property('schema', 'bar');
   }); 
 });
