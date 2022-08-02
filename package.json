@@ -1,6 +1,6 @@
 {
   "name": "@rugo-vn/api",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.3",
   "description": "REST Api for handle model.",
   "main": "./src/index.js",
   "type": "module",
