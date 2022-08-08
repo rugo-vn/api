@@ -20,8 +20,6 @@ const handleResp = resp => {
 
 export const actions = {
   async get (ctx) {
-    if (ctx.locals.resp) { return ctx.locals.reps; }
-
     const id = path(['params', 'params', 'id'], ctx);
 
     ctx.meta.perm.action = 'get';
@@ -37,8 +35,6 @@ export const actions = {
   },
 
   async find (ctx) {
-    if (ctx.locals.resp) { return ctx.locals.reps; }
-
     const query = path(['params', 'query'], ctx) || {};
 
     ctx.meta.perm.action = 'find';
@@ -54,8 +50,6 @@ export const actions = {
   },
 
   async create (ctx) {
-    if (ctx.locals.resp) { return ctx.locals.reps; }
-
     const doc = path(['params', 'form'], ctx) || {};
 
     ctx.meta.perm.action = 'create';
@@ -71,8 +65,6 @@ export const actions = {
   },
 
   async patch (ctx) {
-    if (ctx.locals.resp) { return ctx.locals.reps; }
-
     const id = path(['params', 'params', 'id'], ctx);
 
     ctx.meta.perm.action = 'patch';
@@ -90,8 +82,6 @@ export const actions = {
   },
 
   async remove (ctx) {
-    if (ctx.locals.resp) { return ctx.locals.reps; }
-
     const id = path(['params', 'params', 'id'], ctx);
 
     ctx.meta.perm.action = 'remove';
@@ -113,7 +103,6 @@ export const methods = {
     const model = path(['params', 'model'], params);
     const schemas = meta.schemas || [];
 
-    locals.perms = clone(meta.perm);
     meta.perm ||= {};
     meta.perm.model = model;
 
@@ -123,9 +112,8 @@ export const methods = {
         break;
       }
 
-    if (!meta.schema) {
-      locals.resp = NOT_FOUND_RESP;
-    }
+    if (!meta.schema)
+      return NOT_FOUND_RESP;
   },
 
   async gate (ctx) {
@@ -148,13 +136,5 @@ export const hooks = {
     create: 'getSchema',
     patch: 'getSchema',
     remove: 'getSchema'
-  },
-
-  after: {
-    async '*' (ctx, res) {
-      // restore perm
-      ctx.meta.perm = ctx.locals.perms || ctx.meta.perm;      
-      return res;
-    }
   }
 };
