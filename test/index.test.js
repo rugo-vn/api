@@ -1,77 +1,83 @@
 /* eslint-disable */
-import * as apiService from '../src/index.js';
-import { ServiceBroker } from 'moleculer';
+
 import { expect } from 'chai';
+import { createBroker } from '@rugo-vn/service';
 
 const modelService = {
   name: 'model',
-  actions: {
-    get({ params, meta }){ return { params, meta }; },
-    find({ params, meta }){ return { params, meta }; },
-    create({ params, meta }){ return { params, meta }; },
-    patch({ params, meta }){ return { params, meta }; },
-    remove({ params, meta }){ return { params, meta }; }
-  }
+  actions: {}
 };
 
-const DEFAULT_SETTINGS = { meta: { schemas: [{ name: 'foo' }] } };
+for (let action of ['get', 'find', 'create', 'remove', 'update', 'register', 'login', 'about', 'password'])
+  modelService.actions[action] = function(args) { return args; };
+
+const DEFAULT_SETTINGS = { 
+  schemas: [
+    { _name: 'foo' },
+    { _name: 'bar' },
+  ]
+};
 
 describe('Api test', () => {
   let broker;
 
   beforeEach(async () => {
-    broker = new ServiceBroker();
-    broker.createService(modelService)
-    broker.createService({ ...apiService });
+    broker = createBroker({
+      _services: [
+        './src/index.js',
+      ],
+    });
+
+    await broker.loadServices();
+    await broker.createService(modelService);
     await broker.start();
   });
 
   afterEach(async () => {
-    await broker.stop();
+    await broker.close();
   });
 
   it('should get', async () => {
-    const { body, status } = await broker.call('api.get', { params: { id: 0, model: 'foo' } }, DEFAULT_SETTINGS);
-    expect(status).to.not.be.eq(404);
-    expect(body.params).to.has.property('id', 0);
-    expect(body.meta.schema).to.has.property('name', 'foo');
+    const { data } = await broker.call('api.get', { params: { id: 0, model: 'foo' }, ...DEFAULT_SETTINGS });
+    expect(data).to.has.property('id', 0);
+    expect(data).to.has.property('schema');
   }); 
 
   it('should find', async () => {
-    const { body, status } = await broker.call('api.find', { 
+    const { data } = await broker.call('api.find', { 
       params: { model: 'foo' }, 
-      query: { filters: { name: 'foo' }, page: 1 } 
-    }, DEFAULT_SETTINGS);
+      query: { query: { name: 'foo' }, page: 1, limit: 5 },
+      ...DEFAULT_SETTINGS
+    });
 
-    expect(status).to.not.be.eq(404);
-    expect(body.params).to.has.property('filters');
-    expect(body.params).to.has.property('page', 1);
-    expect(body.params.filters).to.has.property('name', 'foo');
+    expect(data).to.has.property('query');
+    expect(data).to.has.property('page', 1);
+    expect(data).to.has.property('limit', 5);
   });
 
   it('should create', async () => {
-    const { body, status } = await broker.call('api.create', { 
+    const { data } = await broker.call('api.create', { 
       params: { model: 'foo' }, 
-      form: { foo: 'bar' }
-    }, DEFAULT_SETTINGS);
+      form: { foo: 'bar' },
+      ...DEFAULT_SETTINGS
+    });
 
-    expect(status).to.not.be.eq(404);
-    expect(body.params.doc).to.has.property('foo', 'bar');
+    expect(data.data).to.has.property('foo', 'bar');
   });
 
-  it('should patch', async () => {
-    const { body, status } = await broker.call('api.patch', { 
-      params: { model: 'foo' }, 
-      form: { set: { foo: 'bar' } }
-    }, DEFAULT_SETTINGS);
 
-    expect(status).to.not.be.eq(404);
-    expect(body.params.set).to.has.property('foo', 'bar');
+  it('should patch', async () => {
+    const { data } = await broker.call('api.update', { 
+      params: { id: 0, model: 'foo' }, 
+      form: { set: { foo: 'bar' } },
+      ...DEFAULT_SETTINGS
+    });
+
+    expect(data.set).to.has.property('foo', 'bar');
   });
 
   it('should remove', async () => {
-    const { body, status } = await broker.call('api.remove', { params: { id: 0, model: 'foo' } }, DEFAULT_SETTINGS);
-    expect(status).to.not.be.eq(404);
-    expect(body.params).to.has.property('id', 0);
+    const { data } = await broker.call('api.remove', { params: { id: 0, model: 'foo' }, ...DEFAULT_SETTINGS });
+    expect(data).to.has.property('id', 0);
   }); 
 });
