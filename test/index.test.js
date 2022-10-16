@@ -11,11 +11,22 @@ const modelService = {
 for (let action of ['get', 'find', 'create', 'remove', 'update', 'register', 'login', 'about', 'password'])
   modelService.actions[action] = function(args) { return args; };
 
+const authService = {
+  name: 'auth',
+  actions: {
+    register(args){ return args },
+    login(args){ return args },
+  }
+}
+
+const AUTH_SCHEMA = { _name: 'bar' };
+
 const DEFAULT_SETTINGS = { 
   schemas: [
     { _name: 'foo' },
-    { _name: 'bar' },
-  ]
+    AUTH_SCHEMA,
+  ],
+  authSchema: AUTH_SCHEMA,
 };
 
 describe('Api test', () => {
@@ -30,6 +41,7 @@ describe('Api test', () => {
 
     await broker.loadServices();
     await broker.createService(modelService);
+    await broker.createService(authService);
     await broker.start();
   });
 
@@ -38,7 +50,11 @@ describe('Api test', () => {
   });
 
   it('should get', async () => {
-    const { data } = await broker.call('api.get', { params: { id: 0, model: 'foo' }, ...DEFAULT_SETTINGS });
+    const { data } = await broker.call('api.get', { 
+      params: { id: 0, model: 'foo' },
+      ...DEFAULT_SETTINGS
+    });
+
     expect(data).to.has.property('id', 0);
     expect(data).to.has.property('schema');
   }); 
@@ -80,4 +96,22 @@ describe('Api test', () => {
     const { data } = await broker.call('api.remove', { params: { id: 0, model: 'foo' }, ...DEFAULT_SETTINGS });
     expect(data).to.has.property('id', 0);
   }); 
+
+  it('should register', async () => {
+    const { data } = await broker.call(`api.register`, {
+      form: { username: 'foo', password: '123456' },
+      ...DEFAULT_SETTINGS,
+    });
+
+    expect(data.data).to.has.property('username', 'foo');
+  });
+
+  it('should login', async () => {
+    const { data } = await broker.call('api.login', {
+      form: { username: 'foo', password: '123456' },
+      ...DEFAULT_SETTINGS,
+    });
+
+    expect(data.data).to.has.property('username', 'foo');
+  });
 });

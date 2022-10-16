@@ -14,6 +14,8 @@ REST Api for handle model.
 
 ### Input Args
 
+Using Rugo Server output args as input, and some variables below:
+
 - `schemas` Using for mapping Rugo Model.
 - `params.model` For select model actions.
 - `auth` Auth object for authorization.
@@ -22,11 +24,11 @@ REST Api for handle model.
 
 ### Output Args
 
+- It must have `schema` as output args.
+
 ## Actions
 
 **Model Mapping**
-
-- It must have `schema` as output args.
 
 ### `find`
 
@@ -81,11 +83,27 @@ Args Mapping `model.remove`:
 
 ### `register`
 
+Args Mapping `auth.register`:
+
++ `form` -> `data`
+
 ### `login`
+
+Args Mapping `auth.login`:
+
++ `form` -> `data`
+
+### `password`
+
+<br />
+
+**Others**
 
 ### `about`
 
-### `password`
+Return
+
+- Basic server response needed with `data` is the user info.
 
 ## License
 
