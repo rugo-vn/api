@@ -39,11 +39,11 @@ export const remove = async function ({ params: { id }, schema, gate }) {
 export const register = async function ({ form, authSchema: schema }) {
   const resp = await this.call('auth.register', { data: form, schema });
 
-  return ApiResp(resp);
+  return ApiResp({ data: resp });
 };
 
 export const login = async function ({ form, authSchema: schema }) {
   const resp = await this.call('auth.login', { data: form, schema });
 
-  return ApiResp(resp);
+  return ApiResp({ data: resp });
 };
