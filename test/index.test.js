@@ -21,12 +21,8 @@ const authService = {
 
 const AUTH_SCHEMA = { _name: 'bar' };
 
-const DEFAULT_SETTINGS = { 
-  schemas: [
-    { _name: 'foo' },
-    AUTH_SCHEMA,
-  ],
-  authSchema: AUTH_SCHEMA,
+const DEFAULT_SETTINGS = {
+  authModel: AUTH_SCHEMA._name,
 };
 
 describe('Api test', () => {
@@ -37,6 +33,10 @@ describe('Api test', () => {
       _services: [
         './src/index.js',
       ],
+      _globals: {
+        'schema.foo': { _name: 'foo' },
+        [`schema.${AUTH_SCHEMA._name}`]: AUTH_SCHEMA,
+      },
     });
 
     await broker.loadServices();
@@ -56,7 +56,7 @@ describe('Api test', () => {
     });
 
     expect(data).to.has.property('id', 0);
-    expect(data).to.has.property('schema');
+    expect(data).to.has.property('model');
   }); 
 
   it('should find', async () => {
@@ -98,7 +98,7 @@ describe('Api test', () => {
   }); 
 
   it('should register', async () => {
-    const { data } = await broker.call(`api.register`, {
+    const { data: { data } } = await broker.call(`api.register`, {
       form: { username: 'foo', password: '123456' },
       ...DEFAULT_SETTINGS,
     });
@@ -107,7 +107,7 @@ describe('Api test', () => {
   });
 
   it('should login', async () => {
-    const { data } = await broker.call('api.login', {
+    const { data: { data } } = await broker.call('api.login', {
       form: { username: 'foo', password: '123456' },
       ...DEFAULT_SETTINGS,
     });

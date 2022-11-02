@@ -12,14 +12,17 @@ REST Api for handle model.
 
 ## Common
 
+### Globals
+
+- `schema.<modelName>`
+
 ### Input Args
 
 Using Rugo Server output args as input, and some variables below:
 
-- `schemas` Using for mapping Rugo Model.
 - `params.model` For select model actions.
 - `auth` Auth object for authorization.
-- `authSchema` user's schema for authentication.
+- `authModel` model name for authentication.
 - `appId` Using for complete modelName with format `appId.modelName`.
 
 ### Output Args
