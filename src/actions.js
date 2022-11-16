@@ -36,6 +36,13 @@ export const remove = async function ({ params: { id }, schema, gate }) {
   return ApiResp(resp);
 };
 
+export const x = async function ({ params: { action, id }, form, query, schema, gate }) {
+  if (!await gate(action)) { throw new ForbiddenError('Not allow to do this action'); }
+
+  const resp = await this.call(`model.${action}`, { id, ...query, ...form, name: schema._name });
+  return ApiResp(resp);
+};
+
 export const register = async function ({ form, authModel: model }) {
   const resp = await this.call('auth.register', { data: form, model });
 
