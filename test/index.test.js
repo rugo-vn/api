@@ -56,7 +56,7 @@ describe('Api test', () => {
     });
 
     expect(data).to.has.property('id', 0);
-    expect(data).to.has.property('model');
+    expect(data).to.has.property('name');
   }); 
 
   it('should find', async () => {

@@ -39,6 +39,11 @@ export const remove = async function ({ params: { id }, schema, gate }) {
 export const x = async function ({ params: { action, id }, form, query, schema, gate }) {
   if (!await gate(action)) { throw new ForbiddenError('Not allow to do this action'); }
 
+  if (action === 'download' && schema._driver === 'fs') {
+    const { data: doc } = await this.call('model.get', { id, name: schema._name });
+    return ApiResp(doc.data);
+  }
+
   const resp = await this.call(`model.${action}`, { id, ...query, ...form, name: schema._name });
   return ApiResp(resp);
 };
