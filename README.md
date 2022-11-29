@@ -22,12 +22,7 @@ Using Rugo Server output args as input, and some variables below:
 
 - `params.model` For select model actions.
 - `auth` Auth object for authorization.
-- `authModel` model name for authentication.
 - `appId` Using for complete modelName with format `appId.modelName`.
-
-### Output Args
-
-- It must have `schema` as output args.
 
 ## Actions
 

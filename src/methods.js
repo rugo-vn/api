@@ -1,6 +1,5 @@
-import { RugoException } from '@rugo-vn/service';
 import { path } from 'ramda';
-import { NotFoundError } from './exceptions.js';
+import { NotFoundError } from '@rugo-vn/exception';
 
 export const selectSchema = function (args) {
   const { appId, params: { model } } = args;
@@ -9,6 +8,7 @@ export const selectSchema = function (args) {
 
   const modelName = appId ? `${appId}.${model}` : model;
 
+  args.name = modelName;
   args.schema = this.globals[`schema.${modelName}`];
   if (!args.schema) { throw new NotFoundError(`Model ${model} is not found`); }
 
@@ -17,7 +17,7 @@ export const selectSchema = function (args) {
     args.gate = () => true;
   } else {
     args.gate = async (action, id) => {
-      if ((args.schema._acl || []).indexOf(action) !== -1) { return true; }
+      if ((args.schema.acl || []).indexOf(action) !== -1) { return true; }
 
       if (!args.authModel) {
         return true;
@@ -29,17 +29,10 @@ export const selectSchema = function (args) {
 
       const user = await this.call('auth.gate', {
         token: path(['headers', 'authorization'], args),
-        model: args.authModel,
         auth
       });
 
       return !!user;
     };
-  }
-};
-
-export const checkAuthSchema = function (args) {
-  if (!args.authModel) {
-    throw new RugoException('Not have schema for auth');
   }
 };
