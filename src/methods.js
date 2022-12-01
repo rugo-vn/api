@@ -17,12 +17,9 @@ export const selectSchema = function (args) {
     args.gate = () => true;
   } else {
     args.gate = async (action, id) => {
-      if ((args.schema.acl || []).indexOf(action) !== -1) { return true; }
+      if ((args.schema.acls || []).indexOf(action) !== -1) { return true; }
 
-      if (!args.authModel) {
-        return true;
-      }
-
+      auth.model = model;
       auth.action = action;
 
       if (id) { auth.id = id; }
