@@ -21,10 +21,6 @@ const authService = {
 
 const AUTH_SCHEMA = { _name: 'bar' };
 
-const DEFAULT_SETTINGS = {
-  authModel: AUTH_SCHEMA._name,
-};
-
 describe('Api test', () => {
   let broker;
 
@@ -35,7 +31,7 @@ describe('Api test', () => {
       ],
       _globals: {
         'schema.foo': { _name: 'foo' },
-        [`schema.${AUTH_SCHEMA._name}`]: AUTH_SCHEMA,
+        [`schema.${AUTH_SCHEMA.name}`]: AUTH_SCHEMA,
       },
     });
 
@@ -52,7 +48,6 @@ describe('Api test', () => {
   it('should get', async () => {
     const { data } = await broker.call('api.get', { 
       params: { id: 0, model: 'foo' },
-      ...DEFAULT_SETTINGS
     });
 
     expect(data).to.has.property('id', 0);
@@ -63,7 +58,6 @@ describe('Api test', () => {
     const { data } = await broker.call('api.find', { 
       params: { model: 'foo' }, 
       query: { query: { name: 'foo' }, page: 1, limit: 5 },
-      ...DEFAULT_SETTINGS
     });
 
     expect(data).to.has.property('query');
@@ -75,7 +69,6 @@ describe('Api test', () => {
     const { data } = await broker.call('api.create', { 
       params: { model: 'foo' }, 
       form: { foo: 'bar' },
-      ...DEFAULT_SETTINGS
     });
 
     expect(data.data).to.has.property('foo', 'bar');
@@ -86,21 +79,19 @@ describe('Api test', () => {
     const { data } = await broker.call('api.update', { 
       params: { id: 0, model: 'foo' }, 
       form: { set: { foo: 'bar' } },
-      ...DEFAULT_SETTINGS
     });
 
     expect(data.set).to.has.property('foo', 'bar');
   });
 
   it('should remove', async () => {
-    const { data } = await broker.call('api.remove', { params: { id: 0, model: 'foo' }, ...DEFAULT_SETTINGS });
+    const { data } = await broker.call('api.remove', { params: { id: 0, model: 'foo' } });
     expect(data).to.has.property('id', 0);
   }); 
 
   it('should register', async () => {
     const { data: { data } } = await broker.call(`api.register`, {
       form: { username: 'foo', password: '123456' },
-      ...DEFAULT_SETTINGS,
     });
 
     expect(data.data).to.has.property('username', 'foo');
@@ -109,7 +100,6 @@ describe('Api test', () => {
   it('should login', async () => {
     const { data: { data } } = await broker.call('api.login', {
       form: { username: 'foo', password: '123456' },
-      ...DEFAULT_SETTINGS,
     });
 
     expect(data.data).to.has.property('username', 'foo');
